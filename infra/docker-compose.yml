@@ -1,0 +1,42 @@
+services:
+  backend:
+    build:
+      context: ../../../chatbot
+      dockerfile: Dockerfile
+    container_name: math-assistant-backend
+    env_file:
+      - ../../../chatbot/.env
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - math-assistant-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: math-assistant-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - math-assistant-network
+    restart: unless-stopped
+
+networks:
+  math-assistant-network:
+    driver: bridge
