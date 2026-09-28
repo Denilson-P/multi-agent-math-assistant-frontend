@@ -50,7 +50,7 @@ export function useChat() {
     }
 
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: `${Date.now()}-${Math.random()}`,
       content,
       sender: "user",
     };
@@ -67,7 +67,7 @@ export function useChat() {
       const response = await sendChatMessage(content);
 
       const assistantMessage: ChatMessage = {
-        id: crypto.randomUUID(),
+        id: `${Date.now()}-${Math.random()}`,
         content: response.response,
         sender: "assistant",
         result: response.result ?? undefined,
